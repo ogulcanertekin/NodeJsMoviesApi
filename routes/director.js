@@ -4,6 +4,44 @@ const mongoose=require('mongoose');
 
 const Director = require('../models/Director');
 
+//Director Remove -->api/directors/id [DELETE]
+
+router.delete('/:director_id',(req,res)=>{
+		const promise=Director.findByIdAndDelete(req.params.director_id)
+
+		promise.then((data)=>{
+			if(!data)
+				next({ message :'The director was not found.',code:99}); //app.js te error handlera gider.
+	
+			res.json({status:'OK'});	
+		}).catch((err)=>{
+			res.json(err);
+		})
+});
+
+//Director Update -->api/directors/id [PUT]
+
+router.put('/:director_id',(req,res)=>{
+	const promise=Director.findByIdAndUpdate(
+		req.params.director_id,
+		req.body,		//req.body gönderilen update.
+		{
+			new:true //response dönerken update edilmis hali dönsün.
+		}
+	);
+
+	promise.then((data)=>{
+		if(!data)
+			next({ message :'The director was not found.',code:99}); //app.js te error handlera gider.
+
+		res.json(data);	
+	}).catch((err)=>{
+		res.json(err);
+	})
+});
+
+
+
 //Director Detail -->api/directors/id -->Match operatoru kullanılmalı
 
 router.get('/:director_id', (req, res) => {
@@ -56,18 +94,6 @@ router.get('/:director_id', (req, res) => {
 		res.json(err);
 	});
 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 //api/directors -->directors with films
 
