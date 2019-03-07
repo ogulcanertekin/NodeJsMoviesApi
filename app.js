@@ -17,6 +17,9 @@ const db = require('./helper/db')();  //dahil ettikten sonra () calıstırıyor.
 //Config
 const config=require('./config');
 
+//JWT Middleware
+const verifyToken = require('./middleware/verify-token');
+
 app.set('api_secret_key',config.api_secret_key); //global olarak kullanabilmek için;
 
 // view engine setup
@@ -30,6 +33,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+
+app.use('/api',verifyToken);    //  api altındaki tüm routelar için Token dogrulaması middlewarei calıssın./api/movies dersek yalnızca o kısım icin de calısabilir.Hepsinde oturum dogrulaması yapılsın istiyoruz.
+
 app.use('/api/movies', movie);      //1. parametre default 2. parametre-->movie.js
 app.use('/api/directors', director); //director.js
 
