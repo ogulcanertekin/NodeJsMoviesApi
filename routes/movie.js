@@ -100,10 +100,23 @@ router.get('/:movie_id',(req,res,next)=>{ // --> :movie_id  basına 2 nokta koyu
 
 });
 
+//ALL FILMS with directors -->/api/movies
 
-router.get('/',(req,res)=>{         //ALL FILMS -->/api/movies
+router.get('/',(req,res)=>{         
 
-  const promise = Movie.find({});
+  const promise = Movie.aggregate([
+    {
+      $lookup: {
+        from:'directors',
+        localField:'director_id',
+        foreignField:'_id',
+        as:'director'
+      }
+    },
+    {
+      $unwind:'$director'
+    }
+  ]);
 
   promise.then((data)=>{
     res.json(data);
