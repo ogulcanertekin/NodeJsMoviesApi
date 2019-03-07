@@ -1,5 +1,5 @@
 // npm install mocha chai chai-http --save-dev
-// çalıştırmak için  cmd --> mocha
+// çalıştırmak için -->npm install --global mocha  cmd --> mocha // package.jsona script ekledikten sonra -npm test(npm run test.)
 // test de bir hata oldugunda expected  ve actual ile bilgilendirme yapılıyor.
 
 
