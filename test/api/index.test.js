@@ -7,7 +7,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const should = chai.should();           //should yapısını tanımlıyoruz.
 
-const server = require('../app.js');
+const server = require('../../app.js');
 
 chai.use(chaiHttp);  //chai http plugini kullanmak için.
 
