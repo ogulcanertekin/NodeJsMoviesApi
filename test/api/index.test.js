@@ -13,8 +13,8 @@ chai.use(chaiHttp);  //chai http plugini kullanmak için.
 
 // / -->index dizini için test
 
-describe('Node Server',()=>{ // describe kavramı  --> açıklama   it kavramı->Bir describe içinde birden fazla test yazılabilir.
-    it('(GET /) anasayfayı döndürür',(done)=>{
+describe('Index Tests',()=>{ // describe kavramı  --> açıklama   it kavramı->Bir describe içinde birden fazla test yazılabilir.
+    it('/ GET Index Page',(done)=>{
         chai.request(server)                    //sunucuya get ile ana dizine istekte bulunuyoruz.
             .get('/')
             .end((err,res)=>{
