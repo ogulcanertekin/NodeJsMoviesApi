@@ -11,9 +11,9 @@ const server = require('../../app.js');
 
 chai.use(chaiHttp);                     //chai http plugini kullanmak için.
 
-// api/movies [GET] için test --> önce /authenticate [POST] ile token alınmalı .
+// --> önce api/movies altındaki tüm işlemler için /authenticate [POST] ile token alınmalı . ----//
 
-describe('/api/movies TESTS',()=>{
+describe('/api/movies TESTS',()=>{      //tüm api/movies altındaki testler için describe ve before ile token alıması.
     before((done)=>{                    //before ifadesiyle testten önceki işlemlerimi gerçekleştirebiliyorum.Token almak...
         chai.request(server)
             .post('/authenticate')
@@ -37,4 +37,35 @@ describe('/api/movies TESTS',()=>{
                 });
         })
     });
+
+    //---- api/movies [POST] için test
+
+    describe('/POST movie', () => {
+		it('it should POST a movie', (done) => {
+			const movie = {
+				title: 'The Lord of the Rings:The Two Towers',
+				director_id: '5c7f3533f401a512dcea4022',
+				category: 'Adventure',
+				country: 'USA',
+				year: 2002,
+				imdb_score: 8.7
+			};
+
+			chai.request(server)
+				.post('/api/movies')
+				.send(movie)
+				.set('x-access-token', token)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.should.have.property('title');
+					res.body.should.have.property('director_id');
+					res.body.should.have.property('category');
+					res.body.should.have.property('country');
+					res.body.should.have.property('year');
+					res.body.should.have.property('imdb_score');
+					done();
+				});
+		});
+	});
 });
