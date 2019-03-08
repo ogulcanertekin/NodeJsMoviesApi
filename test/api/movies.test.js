@@ -13,6 +13,8 @@ chai.use(chaiHttp);                     //chai http plugini kullanmak için.
 
 // --> önce api/movies altındaki tüm işlemler için /authenticate [POST] ile token alınmalı . ----//
 
+let token,movieId;                  //movieId -->post ettigimiz datanın idsini daha sonraki testlerde kullanmak için.
+
 describe('/api/movies TESTS',()=>{      //tüm api/movies altındaki testler için describe ve before ile token alıması.
     before((done)=>{                    //before ifadesiyle testten önceki işlemlerimi gerçekleştirebiliyorum.Token almak...
         chai.request(server)
@@ -24,6 +26,8 @@ describe('/api/movies TESTS',()=>{      //tüm api/movies altındaki testler iç
                 done();
             });
     });
+
+    //---- api/movies [GET] için test
 
     describe('/api/movies [GET] TEST',()=>{             //token alındıktan sonra /api/movies erişmek için test yazıyoruz.
         it('it should Get all the movies',(done)=>{
@@ -63,9 +67,65 @@ describe('/api/movies TESTS',()=>{      //tüm api/movies altındaki testler iç
 					res.body.should.have.property('category');
 					res.body.should.have.property('country');
 					res.body.should.have.property('year');
+                    res.body.should.have.property('imdb_score');
+                    movieId = res.body._id;
+					done();
+				});
+		});
+    });
+    
+    //--- api/movies/:movie_id [GET] için test
+
+    describe('/GET/:movie_id movie', () => {
+		it('it should GET a movie by the given id', (done) => {
+			chai.request(server)
+				.get('/api/movies/' + movieId)      //post ettigimiz testde aldıgımız movieIdyi bu testte kullanıyoruz.
+				.set('x-access-token', token)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.should.have.property('title');
+					res.body.should.have.property('director_id');
+					res.body.should.have.property('category');
+					res.body.should.have.property('country');
+					res.body.should.have.property('year');
 					res.body.should.have.property('imdb_score');
+					res.body.should.have.property('_id').eql(movieId);
+					done();
+				});
+		});
+    });
+    
+    //--- api/movies/:movie_id [PUT] için test
+
+    describe('/PUT/:movie_id movie', () => {
+		it('it should UPDATE a movie given by id', (done) => {
+			const movie = {
+				title: 'Ogulcans update movie test',
+				director_id: '5a34e1afb8523a78631f8541',
+				category: 'Drama',
+				country: 'France',
+				year: 2019,
+				imdb_score: 9.9
+			};
+
+			chai.request(server)
+				.put('/api/movies/' + movieId)
+				.send(movie)
+				.set('x-access-token', token)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.should.have.property('title').eql(movie.title);
+					res.body.should.have.property('director_id').eql(movie.director_id);
+					res.body.should.have.property('category').eql(movie.category);
+					res.body.should.have.property('country').eql(movie.country);
+					res.body.should.have.property('year').eql(movie.year);
+					res.body.should.have.property('imdb_score').eql(movie.imdb_score);
+
 					done();
 				});
 		});
 	});
+
 });
